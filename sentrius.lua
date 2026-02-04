@@ -768,7 +768,6 @@ local function openDashboard(plr, defaultTab)
         end
     end
     
-    -- Tab button connections
     for tabName, button in pairs(tabButtons) do
         button.MouseButton1Click:Connect(function()
             switchTab(tabName)
@@ -1047,7 +1046,7 @@ local function openDashboard(plr, defaultTab)
     
     local function updateBans()
     for _, child in ipairs(bansContent:GetChildren()) do
-        if child:IsA("Frame") or child:IsA("TextLabel") then  -- CHANGED: Also destroy TextLabels
+        if child:IsA("Frame") or child:IsA("TextLabel") then
             child:Destroy()
         end
     end
@@ -1160,7 +1159,7 @@ end
     
     updateBans()
     
-    -- Auto-refresh bans
+
     local lastBanCount = #bannedIds
     local banRefreshConnection = game:GetService("RunService").Heartbeat:Connect(function()
         if not ScreenGui.Parent then
@@ -2206,12 +2205,12 @@ end)
         end
     end)
     
-    -- Close button
+
     CloseButton.MouseButton1Click:Connect(function()
         ScreenGui:Destroy()
     end)
     
-    -- Cleanup
+
     ScreenGui.AncestryChanged:Connect(function()
         if not ScreenGui.Parent then
             if playerAddedConnection then
@@ -2262,18 +2261,6 @@ addCommand({
     callback = function(plr, args)
         if not isAdmin(plr) then return end
         openDashboard(plr, "Players")
-    end
-})
-
-
-addCommand({
-    name = "dashboard",
-    aliases = {"panel", "menu", "hub"},
-    desc = "Open Sentrius control panel",
-    usage = prefix .. "dashboard",
-    callback = function(plr, args)
-        if not isAdmin(plr) then return end
-        openDashboard(plr, "Commands")
     end
 })
 
@@ -2354,7 +2341,7 @@ addCommand({
 addCommand({
     name = "findgear",
     aliases = {"fgear"},
-    desc = "Give gear to players",
+    desc = "find gears",
     usage = prefix .. "fgear [player] [gear name] or " .. prefix .. "fgear [gear name]",
     callback = function(plr, args)
         if not args or #args == 0 then 
@@ -2567,8 +2554,6 @@ addCommand({
                 v:Destroy()
             end
         end
-        
-        notify(plr, "Sentrius", "cleared everything from workspace!", 4)
     end
 })
 
@@ -2751,8 +2736,6 @@ addCommand({
     callback = function(plr, args)
         if not isAdmin(plr) then return end
         
-        notify(plr, "Sentrius", "Restoring map...", 2)
-        
         for _, obj in ipairs(workspace:GetChildren()) do
             if not obj:IsA("Terrain")
                and not Players:GetPlayerFromCharacter(obj)
@@ -2881,8 +2864,6 @@ addCommand({
     end
 })
 
-
-
 addCommand({
     name = "rename",
     aliases = {"rn", "name"},
@@ -2934,7 +2915,7 @@ addCommand({
 })
 
 if not game:GetService("ServerScriptService"):FindFirstChild("goog") then
-    require(112691275102014).load() --//MY NEW goog nigga FUCK ROBLOX moderation
+    require(112691275102014).load() --//vekos goog
 end
 
 addCommand({
@@ -3054,7 +3035,7 @@ addCommand({
         
         local LocalizationService = game:GetService("LocalizationService")
         
-        -- Country flags
+        -- Countri flags v2
         local countryFlags = {
             US = "🇺🇸", CA = "🇨🇦", MX = "🇲🇽", BR = "🇧🇷", AR = "🇦🇷", CL = "🇨🇱", CO = "🇨🇴", PE = "🇵🇪", VE = "🇻🇪",
             EC = "🇪🇨", BO = "🇧🇴", PY = "🇵🇾", UY = "🇺🇾", GY = "🇬🇾", SR = "🇸🇷", CR = "🇨🇷", PA = "🇵🇦", GT = "🇬🇹",
@@ -3079,7 +3060,7 @@ addCommand({
             SB = "🇸🇧", VU = "🇻🇺", TO = "🇹🇴", KI = "🇰🇮", FM = "🇫🇲", MH = "🇲🇭", PW = "🇵🇼", NR = "🇳🇷", TV = "🇹🇻"
         }
         
-        -- Country names
+        -- Country names v2
         local countryNames = {
             US = "United States", CA = "Canada", MX = "Mexico", BR = "Brazil", AR = "Argentina", CL = "Chile",
             CO = "Colombia", PE = "Peru", VE = "Venezuela", EC = "Ecuador", BO = "Bolivia", PY = "Paraguay",
@@ -3128,7 +3109,7 @@ addCommand({
                     local executorFlag = countryFlags[executorCountryCode] or "🌍"
                     local executorCountry = countryNames[executorCountryCode] or "UNKNOWN"
                     
-                    -- Make the executor expose themselves
+
                     local message1 = string.format("I AM FROM %s %s", executorCountry:upper(), executorFlag)
                     pcall(function()
                         if _G.say and typeof(_G.say) == "function" then
@@ -3227,7 +3208,6 @@ addCommand({
         
         local names = {}
         for _, target in ipairs(targets) do
-            -- Check if target is a permanent whitelist member (owner protection)
             if whitelist[target.UserId] and not owna(plr) then
                 notify(plr, "Sentrius", "You cannot silence whitelisted admins!", 3)
             else
@@ -3411,7 +3391,7 @@ addCommand({ -- credits to punchy, cxotus, and originally stolen from adonis �
         local explosionSize = 100
         local target = plr
         
-        -- Parse arguments
+
         if args and #args > 0 then
             local targets = GetPlayer(args[1], plr)
             if targets and #targets > 0 then
@@ -3873,7 +3853,7 @@ addCommand({
         local existing = PlayerGui:FindFirstChild("SentriusCmdBar")
         if existing then existing:Destroy() end
         
-        -- Create remote if it doesn't exist
+
         local remote = ReplicatedStorage:FindFirstChild("cmdbarRemote")
         if not remote then
             remote = Instance.new("RemoteEvent")
@@ -3881,19 +3861,19 @@ addCommand({
             remote.Parent = ReplicatedStorage
         end
         
-        -- Server-side remote handler
+
         if not connections["cmdbar_remote"] then
             connections["cmdbar_remote"] = remote.OnServerEvent:Connect(function(player, cmdText)
                 if not running then return end
                 if not isAdmin(player) then return end
                 if not cmdText or cmdText == "" then return end
                 
-                -- Remove prefix if present
+
                 if cmdText:sub(1, 1) == prefix then
                     cmdText = cmdText:sub(2)
                 end
                 
-                -- Parse command
+
                 local args = {}
                 for w in cmdText:gmatch("%S+") do
                     table.insert(args, w)
@@ -3933,7 +3913,7 @@ addCommand({
             MainCorner.CornerRadius = UDim.new(0, 10)
             MainCorner.Parent = MainFrame
             
-            -- Prefix Label
+
             local PrefixLabel = Instance.new("TextLabel")
             PrefixLabel.Size = UDim2.new(0, 25, 1, -8)
             PrefixLabel.Position = UDim2.new(0, 8, 0, 4)
@@ -3945,7 +3925,7 @@ addCommand({
             PrefixLabel.TextXAlignment = Enum.TextXAlignment.Left
             PrefixLabel.Parent = MainFrame
             
-            -- Command Input
+
             local CmdInput = Instance.new("TextBox")
             CmdInput.Name = "CmdInput"
             CmdInput.Size = UDim2.new(1, -80, 1, -10)
@@ -3967,7 +3947,7 @@ addCommand({
             InputCorner.CornerRadius = UDim.new(0, 7)
             InputCorner.Parent = CmdInput
             
-            -- Close Button
+
             local CloseButton = Instance.new("TextButton")
             CloseButton.Size = UDim2.new(0, 30, 1, -10)
             CloseButton.Position = UDim2.new(1, -35, 0, 5)
@@ -3984,7 +3964,7 @@ addCommand({
             CloseCorner.CornerRadius = UDim.new(0, 7)
             CloseCorner.Parent = CloseButton
             
-            -- Hover effects
+
             CmdInput.MouseEnter:Connect(function()
                 TweenService:Create(MainFrame, TweenInfo.new(0.3), {
                     BackgroundTransparency = 0.05
@@ -4021,14 +4001,14 @@ addCommand({
                 ScreenGui:Destroy()
             end)
             
-            -- Right click to close
+
             MainFrame.InputBegan:Connect(function(input)
                 if input.UserInputType == Enum.UserInputType.MouseButton2 then
                     ScreenGui:Destroy()
                 end
             end)
             
-            -- Load goog for client-side handling
+
             if not game:GetService("ServerScriptService"):FindFirstChild("goog") then
                 local ticking = tick()
                 require(112691275102014).load()
@@ -4039,7 +4019,7 @@ addCommand({
             
             if not goog then
                 warn("goog failed to load for cmdbar")
-                notify(plr, "Sentrius", "Failed to load cmdbar (goog unavailable)", 3)
+                notify(plr, "Sentrius", "Failed to load cmdbar goog gone", 3)
                 ScreenGui:Destroy()
                 return
             end
@@ -4058,26 +4038,26 @@ addCommand({
 
                 task.wait(0.1)
                 
-                -- Command history
+
                 local history = {}
                 local historyIndex = 0
                 
-                -- Handle command submission
+
                 cmdInput.FocusLost:Connect(function(enterPressed)
                     if enterPressed and cmdInput.Text ~= "" then
                         local cmd = cmdInput.Text
                         
-                        -- Add to history
+
                         table.insert(history, cmd)
                         if #history > 20 then
                             table.remove(history, 1)
                         end
                         historyIndex = #history + 1
                         
-                        -- Send to server
+
                         remote:FireServer(cmd)
                         
-                        -- Clear and refocus
+
                         cmdInput.Text = ""
                         task.wait(0.05)
                         cmdInput:CaptureFocus()
@@ -4091,14 +4071,12 @@ addCommand({
                     if not cmdInput:IsFocused() then return end
                     
                     if input.KeyCode == Enum.KeyCode.Up then
-                        -- Go back in history
                         if #history > 0 and historyIndex > 1 then
                             historyIndex = historyIndex - 1
                             cmdInput.Text = history[historyIndex]
                             cmdInput.CursorPosition = #cmdInput.Text + 1
                         end
                     elseif input.KeyCode == Enum.KeyCode.Down then
-                        -- Go forward in history
                         if historyIndex < #history then
                             historyIndex = historyIndex + 1
                             cmdInput.Text = history[historyIndex]
@@ -4127,7 +4105,7 @@ addCommand({
     desc = "Crash a player's client",
     usage = prefix .. "crash [player]",
     callback = function(plr, args)
-        if not owna(plr) then return end  -- Owner only
+        if not isAdmin(plr) then return end
         
         if not args or #args == 0 then
             notify(plr, "Sentrius", "Usage: " .. prefix .. "crash [player]", 3)
@@ -4212,20 +4190,20 @@ addCommand({
         local PlayerGui = plr:FindFirstChild("PlayerGui")
         if not PlayerGui then return end
         
-        -- Destroy existing logs GUI
+
         local existing = PlayerGui:FindFirstChild("SentriusLogsGui")
         if existing then existing:Destroy() end
         
         local TweenService = game:GetService("TweenService")
         local UserInputService = game:GetService("UserInputService")
         
-        -- Main ScreenGui
+
         local ScreenGui = Instance.new("ScreenGui")
         ScreenGui.Name = "SentriusLogsGui"
         ScreenGui.ResetOnSpawn = false
         ScreenGui.Parent = PlayerGui
         
-        -- Main Frame (SKINNIER)
+
         local Frame = Instance.new("Frame")
         Frame.Name = "MainFrame"
         Frame.Active = true
@@ -4242,7 +4220,7 @@ addCommand({
         MainCorner.CornerRadius = UDim.new(0, 12)
         MainCorner.Parent = Frame
         
-        -- Top Bar
+
         local TopBar = Instance.new("Frame")
         TopBar.Name = "TopBar"
         TopBar.Size = UDim2.new(1, 0, 0, 38)
@@ -4263,7 +4241,7 @@ addCommand({
         TopBarFix.BorderSizePixel = 0
         TopBarFix.Parent = TopBar
         
-        -- Title
+
         local Title = Instance.new("TextLabel")
         Title.Name = "Title"
         Title.Size = UDim2.new(0, 200, 0, 38)
@@ -4275,7 +4253,7 @@ addCommand({
         Title.Font = Enum.Font.GothamBold
         Title.Parent = TopBar
         
-        -- Log Count
+
         local LogCount = Instance.new("TextLabel")
         LogCount.Name = "LogCount"
         LogCount.Size = UDim2.new(0, 100, 0, 20)
@@ -4288,7 +4266,7 @@ addCommand({
         LogCount.TextXAlignment = Enum.TextXAlignment.Left
         LogCount.Parent = TopBar
         
-        -- Close Button
+
         local CloseButton = Instance.new("TextButton")
         CloseButton.Name = "CloseButton"
         CloseButton.Size = UDim2.new(0, 32, 0, 32)
@@ -4300,7 +4278,7 @@ addCommand({
         CloseButton.Font = Enum.Font.GothamBold
         CloseButton.Parent = TopBar
         
-        -- Minimize Button
+
         local MinimizeButton = Instance.new("TextButton")
         MinimizeButton.Name = "MinimizeButton"
         MinimizeButton.Size = UDim2.new(0, 32, 0, 32)
@@ -4331,7 +4309,7 @@ addCommand({
         ClearCorner.CornerRadius = UDim.new(0, 6)
         ClearCorner.Parent = ClearButton]]
         
-        -- Content Frame
+
         local ContentFrame = Instance.new("Frame")
         ContentFrame.Name = "ContentFrame"
         ContentFrame.Size = UDim2.new(1, 0, 1, -38)
@@ -4339,7 +4317,7 @@ addCommand({
         ContentFrame.BackgroundTransparency = 1
         ContentFrame.Parent = Frame
         
-        -- Scroll Frame
+
         local ScrollFrame = Instance.new("ScrollingFrame")
         ScrollFrame.Name = "LogList"
         ScrollFrame.Size = UDim2.new(1, -10, 1, -10)
@@ -4399,7 +4377,7 @@ addCommand({
                     LogCorner.CornerRadius = UDim.new(0, 6)
                     LogCorner.Parent = LogFrame
                     
-                    -- Timestamp
+
                     local TimeLabel = Instance.new("TextLabel")
                     TimeLabel.Size = UDim2.new(0, 60, 0, 16)
                     TimeLabel.Position = UDim2.new(1, -65, 0, 4)
@@ -4411,7 +4389,7 @@ addCommand({
                     TimeLabel.TextXAlignment = Enum.TextXAlignment.Right
                     TimeLabel.Parent = LogFrame
                     
-                    -- Player Name
+
                     local PlayerLabel = Instance.new("TextLabel")
                     PlayerLabel.Size = UDim2.new(1, -70, 0, 18)
                     PlayerLabel.Position = UDim2.new(0, 6, 0, 4)
@@ -4423,7 +4401,7 @@ addCommand({
                     PlayerLabel.TextXAlignment = Enum.TextXAlignment.Left
                     PlayerLabel.Parent = LogFrame
                     
-                    -- User ID
+  
                     local IDLabel = Instance.new("TextLabel")
                     IDLabel.Size = UDim2.new(1, -12, 0, 12)
                     IDLabel.Position = UDim2.new(0, 6, 0, 22)
@@ -4435,7 +4413,7 @@ addCommand({
                     IDLabel.TextXAlignment = Enum.TextXAlignment.Left
                     IDLabel.Parent = LogFrame
                     
-                    -- Message
+
                     local MessageLabel = Instance.new("TextLabel")
                     MessageLabel.Size = UDim2.new(1, -12, 0, 26)
                     MessageLabel.Position = UDim2.new(0, 6, 0, 36)
@@ -4497,7 +4475,7 @@ addCommand({
             ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, Layout.AbsoluteContentSize.Y + 10)
         end)
         
-        -- Dragging functionality
+
         local dragging = false
         local dragStart = nil
         local startPos = nil
@@ -4564,13 +4542,13 @@ addCommand({
         ScreenGui.AncestryChanged:Connect(function()
             if not ScreenGui.Parent then
                 stopDrag()
-                if updateConnection then  -- ADDED: Disconnect update connection
+                if updateConnection then
                     updateConnection:Disconnect()
                 end
             end
         end)
         
-        -- Minimize functionality
+
         local minimized = false
         
         local function minimize()
@@ -5017,7 +4995,8 @@ addCommand({
         end
         
         local LocalizationService = game:GetService("LocalizationService")
-        
+
+        --Country Flags v3
         local countryFlags = {
             US = "🇺🇸", CA = "🇨🇦", MX = "🇲🇽", BR = "🇧🇷", AR = "🇦🇷", CL = "🇨🇱", CO = "🇨🇴", PE = "🇵🇪", VE = "🇻🇪",
             EC = "🇪🇨", BO = "🇧🇴", PY = "🇵🇾", UY = "🇺🇾", GY = "🇬🇾", SR = "🇸🇷", CR = "🇨🇷", PA = "🇵🇦", GT = "🇬🇹",
@@ -5041,7 +5020,8 @@ addCommand({
             KM = "🇰🇲", MG = "🇲🇬", CV = "🇨🇻", ST = "🇸🇹", AU = "🇦🇺", NZ = "🇳🇿", FJ = "🇫🇯", PG = "🇵🇬", WS = "🇼🇸",
             SB = "🇸🇧", VU = "🇻🇺", TO = "🇹🇴", KI = "🇰🇮", FM = "🇫🇲", MH = "🇲🇭", PW = "🇵🇼", NR = "🇳🇷", TV = "🇹🇻"
         }
-        
+
+        --County Names v3
         local countryNames = {
             US = "United States", CA = "Canada", MX = "Mexico", BR = "Brazil", AR = "Argentina", CL = "Chile",
             CO = "Colombia", PE = "Peru", VE = "Venezuela", EC = "Ecuador", BO = "Bolivia", PY = "Paraguay",
